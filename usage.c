@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2011, Alexander Thomas
+   Copyright (C) 2015, Doug Springer
 
    This file is part of the Gnome Keyring Command Line Tool.
 
@@ -26,7 +27,8 @@
 extern char *error_msg[];
 
 const char *usage_str = "\n"
-"Keyring tools is application that lets you manage GNOME keyring.\n\n"
+"Keyring_too is an application that lets you manage GNOME keyrings.\n\n"
+"Version 1.1\n"
 "Usage:\n"
 "  %s {--list | -t}\n"
 "     List all the existing keyring names.\n\n"
