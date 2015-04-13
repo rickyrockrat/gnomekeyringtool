@@ -39,10 +39,11 @@ static struct option long_options[] = {
   {"info", 1, 0, 'i'},
   {"help", 0, 0, 'h'},
   {"version", 0, 0, 'v'},
+	{"batch",1,0,'b'},
   {0, 0, 0, 0}
 };
 
-#define SHORT_OPTIONS "ts:gc:d:l:u:m:i:hp:n:v"
+#define SHORT_OPTIONS "b:ts:gc:d:l:u:m:i:hp:n:v"
 
 GMainLoop *loop = NULL;
 
@@ -97,6 +98,9 @@ main(int argc, char *argv[])
 
       switch (opt)
         {
+					case 'b':
+             exit(keyring_batch(optarg));
+             break;
           case 't':
              exit(keyring_list());
              break;

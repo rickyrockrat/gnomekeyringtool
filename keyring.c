@@ -141,6 +141,28 @@ callback__done (GnomeKeyringResult result,
   g_main_loop_quit(loop);
   return;
 }
+#if 0
+typedef struct {
+	char *keyring;
+	guint item_id;
+	GnomeKeyringAttributeList *attributes;
+	char *secret;
+} GnomeKeyringFound;
+
+struct GList {
+  gpointer data;
+  GList *next;
+  GList *prev;
+};
+
+void callback_print_list(GnomeKeyringResult result, GList *list, gpointer data)
+{
+	int i;
+	
+	for (i=0;NULL != type_description[i].name; ++i)
+		gnome_keyring_find_items
+}
+#endif
 
 
 void
@@ -148,6 +170,7 @@ callback__get_info (GnomeKeyringResult result,
                     GnomeKeyringInfo *info,
                     gpointer data)
 {
+	int i;
   if (result != GNOME_KEYRING_RESULT_OK)
     {
       print_error(result, "ERROR", "\nCan't access keyring.\n");
@@ -188,7 +211,6 @@ callback__get_info (GnomeKeyringResult result,
            fprintf (stdout, "Keyring modified on : %s\n", buf);
         }
     }
-
   exit_status = TRUE;
   g_main_loop_quit(loop);
 
@@ -318,9 +340,52 @@ keyring_lock(const char *keyname)
 }
 
 
+struct type_desc {
+	GnomeKeyringItemType type;
+	char *name;
+};
+struct type_desc type_description[]={
+	{GNOME_KEYRING_ITEM_GENERIC_SECRET,"GENERIC_SECRET"},
+	{GNOME_KEYRING_ITEM_NETWORK_PASSWORD,"NETWORK_PASSWORD"},
+	{GNOME_KEYRING_ITEM_NOTE,"ITEM_NOTE"},
+	{GNOME_KEYRING_ITEM_CHAINED_KEYRING_PASSWORD,"KEYRING_PASSWORD"},
+	{GNOME_KEYRING_ITEM_ENCRYPTION_KEY_PASSWORD,"KEY_PASSWORD"},
+	{GNOME_KEYRING_ITEM_PK_STORAGE,"PK_STORAGE"},
+	{GNOME_KEYRING_ITEM_LAST_TYPE,NULL}
+};
+
+char *get_type_desc(GnomeKeyringItemType type)
+{
+	GnomeKeyringItemType i;
+	for (i=0;NULL != type_description[i].name; ++i){
+		if(type_description[i].type==type)
+			return type_description[i].name;
+	}
+	return NULL;
+}
+
+void print_keyring_item_attributes (const char *keyname, guint32 id )
+{
+	GnomeKeyringAttributeList *attr;
+	if(GNOME_KEYRING_RESULT_OK == gnome_keyring_item_get_attributes_sync(keyname,id,&attr)){
+		guint x;
+		for (x=0;x<attr->len;++x){
+			GnomeKeyringAttribute *mine;
+			mine=&g_array_index(attr,GnomeKeyringAttribute,x);
+			printf("    %s type %s ",mine->name, get_type_desc(mine->type));
+			if(GNOME_KEYRING_ATTRIBUTE_TYPE_STRING == mine->type)
+				printf("=%s\n",mine->value.string);
+			else
+				printf("=%d\n",mine->value.integer);
+		}
+		 gnome_keyring_attribute_list_free(attr);
+	}
+}
+
 int
 keyring_info(const char *keyname)
 {
+	GList *ids;
 #ifndef HAVE_GNOME_KEYRING_GET_INFO
   print_error(10, "WARNING", "\nThis feature not supported.\n");
   return TRUE; 
@@ -346,10 +411,69 @@ keyring_info(const char *keyname)
            "info", NULL);
 
   g_main_loop_run(loop);
-
+  if(GNOME_KEYRING_RESULT_OK == gnome_keyring_list_item_ids_sync(keyname,&ids)){
+		GList *i;
+		for (i=ids;NULL!=i; i=i->next){
+			guint32 id=GPOINTER_TO_UINT(i->data);
+			GnomeKeyringItemInfo *info;
+			GnomeKeyringAttributeList *attr;
+			if(GNOME_KEYRING_RESULT_OK != gnome_keyring_item_get_info_sync(keyname,id,&info))
+				continue;
+			/*printf("item %s (secret %s): \n", gnome_keyring_item_info_get_display_name(info), gnome_keyring_item_info_get_secret(info)); */
+			printf("item %s : \n", gnome_keyring_item_info_get_display_name(info));
+			gnome_keyring_item_info_free (info);
+			print_keyring_item_attributes(keyname,id);
+			
+		}
+	}
   return exit_status;
 }
 
+int keyring_batch(const char *keyname)
+{
+	GList *ids;
+	gchar *old, *npw, *check;
+	int i;
+	if (keyname == NULL) {
+       print_error(GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, "ERROR", "\nInvalid keyring.\n");
+       return FALSE;
+  }
+
+  if (!gnome_keyring_is_available()) {
+       print_error(GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON, "ERROR", "\nFailed to communicate with a gnome-keyring-daemon.\n");
+       return FALSE;
+  }
+	old=strdup(getpass("Old Password? "));
+	npw=strdup(getpass("New Password? "));
+	check=getpass("Retype New ");
+	if(strcmp(npw,check)){
+		printf("New Password does not match. Abort\n");
+		return FALSE;
+	}
+	if(GNOME_KEYRING_RESULT_OK == gnome_keyring_list_item_ids_sync(keyname,&ids)){
+		GList *i;
+		for (i=ids;NULL!=i; i=i->next){
+			guint32 id=GPOINTER_TO_UINT(i->data);
+			GnomeKeyringItemInfo *info;
+			gchar *secret;
+			if(GNOME_KEYRING_RESULT_OK != gnome_keyring_item_get_info_sync(keyname,id,&info))
+				continue;
+			secret=gnome_keyring_item_info_get_secret(info);
+			if(strcmp(secret,old)){
+				printf("No match!\n");
+			}else
+				printf("Changing password for:\n");
+				
+			print_keyring_item_attributes(keyname,id);
+			gnome_keyring_item_info_set_secret(info,npw);
+			if(GNOME_KEYRING_RESULT_OK !=gnome_keyring_item_set_info_sync(keyname,id,info))
+				printf("Error setting item info!\n");
+			gnome_keyring_item_info_free (info);
+			
+		}
+	}
+	return TRUE;
+}
 
 int
 keyring_delete(const char *keyname)
