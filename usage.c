@@ -61,7 +61,7 @@ print_usage (char *appname)
 {
   fprintf (stderr, usage_str, appname, appname, appname,
            appname, appname, appname, appname, appname,
-           appname, appname, appname);
+           appname, appname, appname,appname);
   exit(0);
 }
 
