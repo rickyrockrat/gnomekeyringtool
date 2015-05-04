@@ -28,7 +28,7 @@ extern char *error_msg[];
 
 const char *usage_str = "\n"
 "Keyring_too is an application that lets you manage GNOME keyrings.\n\n"
-"Version 1.1\n"
+"Version 1.2\n"
 "Usage:\n"
 "  %s {--list | -t}\n"
 "     List all the existing keyring names.\n\n"

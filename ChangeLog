@@ -1,3 +1,4 @@
 Refer to the SVN History:
-
-https://ctf.open.collab.net/sf/discussion/do/listForums/projects.svnedge/scm
+https://sourceforge.net/p/gnomekeyringtool/svn/HEAD/tree/trunk/
+1.1 - added -b, changed -i
+1.2 - fixed segfault in usage.
