@@ -1,0 +1,7 @@
+Notes for releasing tarballs:
+
+cat gnomekeyringtool/README gnomekeyringtool/ChangeLog >ReadMe.txt
+rm -r gnomekeyringtool-1.3
+cp -r gnomekeyringtool gnomekeyringtool-1.3
+tar --exclude=*.svn -czf gnomekeyringtool-1.3.tar.gz gnomekeyringtool-1.3
+
