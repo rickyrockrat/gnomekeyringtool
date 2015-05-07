@@ -20,18 +20,18 @@ pkg-config --libs "glib-2.0"
 
 
 /**
- * const gchar * gnome_keyring_attribute_get_string (GnomeKeyringAttribute *attribute);
+ * const gchar * gnome_keyring_attribute_get_string_helper (GnomeKeyringAttribute *attribute);
  */
-const gchar * gnome_keyring_attribute_get_string (GnomeKeyringAttribute *attribute)
+const gchar * gnome_keyring_attribute_get_string_helper (GnomeKeyringAttribute *attribute)
 {
 	if(NULL == attribute->value.string)
 		return "";
 	return attribute->value.string;
 }
 /**
- * guint32 gnome_keyring_attribute_get_uint32 (GnomeKeyringAttribute *attribute);
+ * guint32 gnome_keyring_attribute_get_uint32_helper (GnomeKeyringAttribute *attribute);
  */
-guint32 gnome_keyring_attribute_get_uint32 (GnomeKeyringAttribute *attribute)
+guint32 gnome_keyring_attribute_get_uint32_helper (GnomeKeyringAttribute *attribute)
 {
 	return attribute->value.integer;
 }

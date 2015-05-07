@@ -6,6 +6,11 @@ into a remote server.
 
 This was forked by rickyrockrat to add several nice features.
 
+
 You can follow the development and history of this tool on:
   https://sourceforge.net/projects/gnomekeyringtool
+
+This project also contains the moz-gnome-keyring-integration that has been modified to work
+on older versions of gnome-keyring (think RedHad).
+https://github.com/swick/moz-gnome-keyring-integration.git
 

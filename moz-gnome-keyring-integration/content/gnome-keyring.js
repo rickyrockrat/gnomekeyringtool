@@ -129,17 +129,17 @@ try {
 
 
 /**
- * const gchar * gnome_keyring_attribute_get_string (GnomeKeyringAttribute *attribute);
+ * const gchar * gnome_keyring_attribute_get_string_helper (GnomeKeyringAttribute *attribute);
  */
-var gnome_keyring_attribute_get_string = gnomeKeyringHelperLib.declare("gnome_keyring_attribute_get_string",
+var gnome_keyring_attribute_get_string_helper = gnomeKeyringHelperLib.declare("gnome_keyring_attribute_get_string_helper",
 	ctypes.default_abi,
 	Type.char.ptr, /* return */
 	Type.GnomeKeyringAttribute.ptr /* attribute*/);
 
 /**
- * guint32 gnome_keyring_attribute_get_uint32 (GnomeKeyringAttribute *attribute);
+ * guint32 gnome_keyring_attribute_get_uint32_helper (GnomeKeyringAttribute *attribute);
  */
-var gnome_keyring_attribute_get_uint32 = gnomeKeyringHelperLib.declare("gnome_keyring_attribute_get_uint32",
+var gnome_keyring_attribute_get_uint32_helper = gnomeKeyringHelperLib.declare("gnome_keyring_attribute_get_uint32_helper",
 	ctypes.default_abi,
 	Type.guint32, /* return */
 	Type.GnomeKeyringAttribute.ptr /* attribute*/);
@@ -573,9 +573,9 @@ itemGetAttributes = function(keyring, id) {
 	for(var i=0; i<array.length; i++) {
 		var value = null;
 		if(array[i].type == Values.AttributeType.STRING)
-			value = gnome_keyring_attribute_get_string(array[i].address()).readString();
+			value = gnome_keyring_attribute_get_string_helper(array[i].address()).readString();
 		else if(array[i].type == Values.AttributeType.UINT32)
-			value = gnome_keyring_attribute_get_uint32(array[i].address());
+			value = gnome_keyring_attribute_get_uint32_helper(array[i].address());
 		attributesOut[array[i].name.readString()] = value;
 	}
 
