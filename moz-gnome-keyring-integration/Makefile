@@ -27,7 +27,7 @@ all: $(xpi_file)
 # This cleans all temporary files and directories created by 'make'.
 .PHONY: clean install
 install:
-	$(MAKE) -c content install
+	$(MAKE) -C content install
 clean:
 	@rm -f $(xpi_file)
 	@rmdir $(bin_dir)
