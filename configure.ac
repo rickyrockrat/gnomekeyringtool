@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
-AC_INIT(keyring_tool, 1.2)
+AC_INIT(keyring_tool, 1.3)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(keyring_tool, 1.2)
+AM_INIT_AUTOMAKE(keyring_tool, 1.3)
 
 PACKAGE_MAJOR=1
 PACKAGE_MINOR=2
@@ -19,7 +19,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_VERSION, "$PACKAGE_VERSION",
                    [Version of package])
 AC_DEFINE_UNQUOTED(PACKAGE_STRING, "$PACKAGE $PACKAGE_VERSION",
                   [Full name and version of package])
-AC_DEFINE_UNQUOTED(PACKAGE_URL, "https://ctf.open.collab.net/sf/projects/keyring",
+AC_DEFINE_UNQUOTED(PACKAGE_URL, "://sourceforge.net/projects/gnomekeyringtool",
                   [URL of package])
 
 
