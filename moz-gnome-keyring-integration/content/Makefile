@@ -6,6 +6,11 @@ libgnome-keyring-helper.so.1.0.1: gnome-keyring.o
 
 gnome-keyring.o: gnome-keyring.c
 	$(CC) -Wall -c $< -o $@ $(CFLAGS) -fPIC
+.PHONY: install
 
-
+install: libgnome-keyring-helper.so.1.0.1
+	cp $^ /usr/lib
+	cd /usr/lib && ln -s libgnome-keyring-helper.so.1.0.1 libgnome-keyring-helper.so.1
+	cd /usr/lib && ln -s libgnome-keyring-helper.so.1.0.1 libgnome-keyring-helper.so
+	ldconfig
 

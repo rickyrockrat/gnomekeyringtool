@@ -15,13 +15,19 @@ xpi_file := $(bin_dir)/$(extension_name).xpi
 
 # This builds the extension XPI file.
 .PHONY: all
+
 all: $(xpi_file)
+	$(MAKE) -C content
 	@echo
 	@echo "Build finished successfully."
 	@echo
+	@echo Now run make install
+
 
 # This cleans all temporary files and directories created by 'make'.
-.PHONY: clean
+.PHONY: clean install
+install:
+	$(MAKE) -c content install
 clean:
 	@rm -f $(xpi_file)
 	@rmdir $(bin_dir)
