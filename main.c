@@ -33,17 +33,19 @@ static struct option long_options[] = {
   {"getdef", 0, 0, 'g'},
   {"create", 1, 0, 'c'},
   {"delete", 1, 0, 'd'},
+	{"keyname", 1, 0, 'k'},																		
   {"lock", 1, 0, 'l'},
   {"unlock", 1, 0, 'u'},
   {"modify", 1, 0, 'm'},
   {"info", 1, 0, 'i'},
   {"help", 0, 0, 'h'},
+	{"remove", 1, 0, 'r'},
   {"version", 0, 0, 'v'},
 	{"batch",1,0,'b'},
   {0, 0, 0, 0}
 };
 
-#define SHORT_OPTIONS "b:ts:gc:d:l:u:m:i:hp:n:v"
+#define SHORT_OPTIONS "b:ts:gk:c:d:l:u:m:i:hp:r:n:v"
 
 GMainLoop *loop = NULL;
 
@@ -119,6 +121,9 @@ main(int argc, char *argv[])
           case 'd':
              exit(keyring_delete(optarg));
              break;
+          case 'k':
+          	keyname=strdup(optarg);
+						break;
           case 'l':
              exit(keyring_lock(optarg));
              break;
@@ -143,6 +148,13 @@ main(int argc, char *argv[])
              if (optarg)
                new_password = strdup(optarg);
              break;
+          case 'r':
+          	if(NULL == keyname){
+							fprintf(stderr,"Must specify -k first\n");
+							return 1;
+						}
+          	exit(keyring_item_delete(keyname,optarg));
+						break;
           case 'v':
              print_version();
              exit(0);

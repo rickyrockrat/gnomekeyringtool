@@ -50,6 +50,10 @@ const char *usage_str = "\n"
 "     Get information of a given keyring.\n\n"
 "  %s {--batch=keyring_name | -b keyring_name}\n"
 "     Set password for matching passwords of a given keyring.\n\n"
+"  %s {--keyname=keyring_name | -k keyring_name}\n"
+"     Set keyring for other operations.\n\n"
+"  %s {--remove=item_name | -r item_name}\n"
+"     Remove item item_name from keyring specified by -k.\n\n"
 "  %s {--version | -v}\n"
 "     print version information.\n\n"
 "  %s {--help | -h}\n"
@@ -61,7 +65,7 @@ print_usage (char *appname)
 {
   fprintf (stderr, usage_str, appname, appname, appname,
            appname, appname, appname, appname, appname,
-           appname, appname, appname,appname);
+           appname, appname, appname,appname,appname, appname);
   exit(0);
 }
 
