@@ -2,3 +2,5 @@ Refer to the SVN History:
 https://sourceforge.net/p/gnomekeyringtool/svn/HEAD/tree/trunk/
 1.1 - added -b, changed -i
 1.2 - fixed segfault in usage.
+1.3 - add -k -r (remove item), added moz-gnome-keyring with supplemental lib
+to work on old versions of gnome-keyring
