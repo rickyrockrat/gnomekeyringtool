@@ -6,6 +6,20 @@ into a remote server.
 
 This was forked by rickyrockrat to add several nice features.
 
+Added -b, 
+Changed -i so it is verbose 
+Use keytool -t to see the list of keychains. 
+
+To see verbose info about a keychain (i.e. the items on it) 
+keyring_tool -i keyname 
+
+usually keyname is login 
+
+To change all passwords matching a certain password: 
+keyring_tool -b keyname 
+
+You will be prompted for old and new (new twice) passwords. It will then search through the passwords, only changing ones that match old. 
+
 
 You can follow the development and history of this tool on:
   https://sourceforge.net/projects/gnomekeyringtool
