@@ -14,3 +14,8 @@ This project also contains the moz-gnome-keyring-integration that has been modif
 on older versions of gnome-keyring (think RedHad).
 https://github.com/swick/moz-gnome-keyring-integration.git
 
+Refer to the Git History (SVN no longer updated): 
+https://sourceforge.net/p/gnomekeyringtool/gkt.git
+1.1 - added -b, changed -i 
+1.2 - fixed segfault in usage. 
+1.3 - add -k -r (remove item), added moz-gnome-keyring with supplemental lib to work on old versions of gnome-keyring
