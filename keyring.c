@@ -418,8 +418,9 @@ int keyring_info(const char *keyname)
 			GnomeKeyringAttributeList *attr;
 			if(GNOME_KEYRING_RESULT_OK != gnome_keyring_item_get_info_sync(keyname,id,&info))
 				continue;
-			/*printf("item %s (secret %s): \n", gnome_keyring_item_info_get_display_name(info), gnome_keyring_item_info_get_secret(info)); */
-			printf("%d: item %s : \n", id, gnome_keyring_item_info_get_display_name(info));
+
+			printf("%d: item name '%s' : \n", id, gnome_keyring_item_info_get_display_name(info));
+/*			printf("item name '%s' (secret %s): \n", gnome_keyring_item_info_get_display_name(info), gnome_keyring_item_info_get_secret(info));  */
 			gnome_keyring_item_info_free (info);
 			print_keyring_item_attributes(keyname,id);
 			
@@ -467,6 +468,53 @@ int keyring_item_delete(const char *keyname, char *displayname)
 			if(GNOME_KEYRING_RESULT_OK != gnome_keyring_item_get_info_sync(keyname,id,&info))
 				continue;
 			if( !strcmp(gnome_keyring_item_info_get_display_name(info),displayname))
+				found_id=id;
+			gnome_keyring_item_info_free (info);
+		}
+	}
+	if(0xFFFFFFFF!= found_id)
+		gnome_keyring_item_delete_sync (keyname,found_id);
+  return exit_status;
+}
+int keyring_item_delete_id(const char *keyname, int del_id)
+{
+	GList *ids;
+	guint32 found_id=0xFFFFFFFF;
+#ifndef HAVE_GNOME_KEYRING_GET_INFO
+  print_error(10, "WARNING", "\nThis feature not supported.\n");
+  return TRUE; 
+#endif
+
+  if (keyname == NULL)
+    {
+       print_error(GNOME_KEYRING_RESULT_NO_SUCH_KEYRING, "ERROR", "\nInvalid keyring.\n");
+       return FALSE;
+    }
+
+  if (!gnome_keyring_is_available())
+    {
+       print_error(GNOME_KEYRING_RESULT_NO_KEYRING_DAEMON, "ERROR",
+                   "\nFailed to communicate with a gnome-keyring-daemon.\n");
+       return FALSE;
+    }
+
+  loop = g_main_loop_new(NULL, FALSE);
+
+  gnome_keyring_get_info(keyname,
+          (GnomeKeyringOperationGetKeyringInfoCallback) callback__get_info,
+           "info", NULL);
+
+  g_main_loop_run(loop);
+  if(GNOME_KEYRING_RESULT_OK == gnome_keyring_list_item_ids_sync(keyname,&ids)){
+		GList *i;
+		
+		for (i=ids;NULL!=i; i=i->next){
+			guint32 id=GPOINTER_TO_UINT(i->data);
+			GnomeKeyringItemInfo *info;
+			GnomeKeyringAttributeList *attr;
+			if(GNOME_KEYRING_RESULT_OK != gnome_keyring_item_get_info_sync(keyname,id,&info))
+				continue;
+			if(del_id == id)
 				found_id=id;
 			gnome_keyring_item_info_free (info);
 		}
