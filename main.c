@@ -153,7 +153,12 @@ main(int argc, char *argv[])
 							fprintf(stderr,"Must specify -k first\n");
 							return 1;
 						}
-          	exit(keyring_item_delete(keyname,optarg));
+			/**auto-detect our ID  */
+			if('I' == optarg[0] && 'D' == optarg[1] && ':' == optarg[2] && '0' >= optarg[3] && '9' <= optarg[3]) {
+				int id=strtoul(&optarg[3],NULL,10);
+				exit(keyring_item_delete_id(keyname,id));
+			}else
+          		exit(keyring_item_delete(keyname,optarg));
 						break;
           case 'v':
              print_version();
